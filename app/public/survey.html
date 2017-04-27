@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <!-- saved from url=(0042)https://friend-finder.herokuapp.com/survey -->
 <html lang="en">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title>Friend Finder</title>
@@ -10,12 +11,12 @@
 	<!-- Latest compiled and minified CSS & JS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
-
 	<!-- Chosen -->
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-	<script type="text/javascript" src="../data/friends.js"></script>
+    <script rel="stylesheet" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	
 
 </head>
+
 <body>
 
 	<div class="container">
@@ -33,7 +34,7 @@
 		<hr>
 
 		<h3><strong>Question 1</strong></h3>
-		<h4>If we were married, what would you say to me buying a new computer game?</h4>
+		<h4>You would me buying a new computer game.</h4>
 	 	<select data-placeholder="" class="chosen-select" id="q1">
 	 		<option value="">Select an Option</option>
             <option value="1">1 (Strongly Disagree)</option>
@@ -44,7 +45,7 @@
       	</select>
 
 		<h3><strong>Question 2</strong></h3>
-		<h4>Generally speaking, you rely more on your experience than your imagination.</h4>
+		<h4>You love bacon more then tofu.</h4>
 	 	<select data-placeholder="" class="chosen-select" id="q2">
 	 		<option value="">Select an Option</option>
             <option value="1">1 (Strongly Disagree)</option>
@@ -56,7 +57,7 @@
 
 
 		<h3><strong>Question 3</strong></h3>
-		<h4>You find it easy to stay relaxed and focused even when there is some pressure.</h4>
+		<h4>You enjoy swimming more then running.</h4>
 	 	<select data-placeholder="" class="chosen-select" id="q3">
 	 		<option value="">Select an Option</option>
             <option value="1">1 (Strongly Disagree)</option>
@@ -183,4 +184,63 @@
 	  </div>
 	</div>
 
-</body></html>
+</body>
+
+<script>
+$(document).on("click", "#submit", function(){
+
+	console.log("Clicked!")
+
+	// Form validation
+	function validateForm() {
+	  var isValid = true;
+	  $('.form-control').each(function() {
+	    if ( $(this).val() === '' )
+	        isValid = false;
+	  });
+
+	  $('.chosen-select').each(function() {
+
+	  	if( $(this).val() === "")
+	  		isValid = false
+	  })
+	  return isValid;
+	}
+
+	// If all required fields are filled
+	if (validateForm() == true)
+	{
+		// Create an object for the user's data
+    	var friendList = {
+    		name: $("#name").val(),
+    		photo: $("#photo").val(),
+    		scores: [$("#q1").val(), $("#q2").val(), $("#q3").val(), $("#q4").val(), $("#q5").val(), $("#q6").val(), $("#q7").val(), $("#q8").val(), $("#q9").val(), $("#q10").val(), ]
+    	}
+
+
+    	// Grab the URL of the website
+    	var currentURL = window.location.origin;
+
+    	// AJAX post the data to the friends API. 
+    	$.post(currentURL + "/api/friends", friendList, function(data){
+
+    		// Grab the result from the AJAX post so that the best match's name and photo are displayed.
+    		$("#matchName").text(data.name);
+    		$('#matchImg').attr("src", data.photo);
+
+	    	// Show the modal with the best match 
+	    	$("#resultsModal").modal('toggle');
+
+    	});
+	}
+	else
+	{
+		alert("Please fill out all fields before submitting!");
+	}
+	
+	return false;
+});
+
+</script>
+
+</html>
